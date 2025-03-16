@@ -4,6 +4,42 @@ Green='\033[0;32m'
 Yellow='\033[0;33m'
 Color_Off='\033[0m'
 
+echo -e "${Yellow}Welcome to the community installer for HiveMQ OSS ${Color_Off}"
+echo ""
+
+echo "Checking prerequisites"
+echo "Curl & Unzip"
+apt install curl unzip -y
+
+echo "Java 17"
+if type -p java; then
+    echo "Found java executable in PATH"
+    _java=java
+elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+    echo "Found java executable in JAVA_HOME"
+    _java="$JAVA_HOME/bin/java"
+else
+    echo "No Java Found, Installing"
+    apt update
+    apt install openjdk-17-jdk -y
+fi
+
+if [[ "$_java" ]]; then
+    version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+    echo "Version ${version}"
+    if [[ "$version" > "17" ]]; then
+        echo "Version is more than 17"
+    else         
+        echo "Version is less than 17, install at least version 17 to run HiveMQ products"
+        exit 3
+    fi
+fi
+
+clear
+
+
+# Installation Menu
+
 cat <<\EOF
   _    _ _           __  __  ____     _____                                      _ _           _______          _     
  | |  | (_)         |  \/  |/ __ \   / ____|                                    (_) |         |__   __|        | |    
@@ -15,11 +51,9 @@ cat <<\EOF
                                                                                        |___/                          
 EOF
 
-echo -e "${Yellow}Welcome to the community installer for HiveMQ OSS ${Color_Off}"
 echo ""
 
-# Installation Menu
-echo "Which version do you want to install :"
+echo "Which Open Source version of HiveMQ do you want to install :"
 echo "1. HiveMQ Community Edition"
 echo "2. HiveMQ Edge Edition"
 read choice
@@ -57,10 +91,11 @@ case $choice in
         echo "Unzipping ..."
         mv ${filename}.zip /opt
         cd /opt
-        unzip ${filename}.zip
+        unzip -o ${filename}.zip
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Creating seemlink"
+        rm /opt/hivemq
         ln -s /opt/hivemq-edge-${selectedVersion} /opt/hivemq
         echo -e "${Green} Success ${Color_Off}"
 
