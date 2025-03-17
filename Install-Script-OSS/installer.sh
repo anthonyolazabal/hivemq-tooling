@@ -64,15 +64,67 @@ case $choice in
         versions=$(curl --silent "https://api.github.com/repos/hivemq/hivemq-community-edition/releases" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         # Check if curl command was successful
         if [ $? -ne 0 ]; then
-        echo -e "${Red} Failed to fetch data from $URL ${Color_Off}"
-        exit 1
+        echo -e "${Red} Failed to fetch data from repository ${Color_Off}"
+        exit 3
         fi
+
+        echo "Select an Edge version:"
+        select version in $versions; do
+        selectedVersion=$(echo "$version")
+        echo "You selected: $selectedVersion"
+        break
+        done
+        filename="hivemq-ce-${selectedVersion}"
+        downloadLink="https://github.com/hivemq/hivemq-community-edition/releases/download/${selectedVersion}/${filename}.zip"
+
+        echo "Downloading : ${filename}"
+        curl -O ${downloadLink}
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo "Unzipping ..."
+        mv ${filename}.zip /opt
+        cd /opt
+        unzip -o ${filename}.zip
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo "Creating seemlink"
+        rm /opt/hivemq
+        ln -s /opt/hivemq-ce-${selectedVersion} /opt/hivemq
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo "Creating hivemq user"
+        useradd -d /opt/hivemq hivemq
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo "Updating files ownership"
+        chown -R hivemq:hivemq /opt/hivemq-ce-${selectedVersion}
+        chown -R hivemq:hivemq /opt/hivemq
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo "Adding execution permission on startup script"
+        cd /opt/hivemq
+        chmod +x ./bin/run.sh
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo "Installing HiveMQ Service"
+        cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
+        systemctl enable hivemq
+
+        echo "Starting service"
+        systemctl start hivemq
+        echo -e "${Green} Success ${Color_Off}"
+
+        echo -e "${Green}Installation done ${Color_Off}"
         ;;
     2) 
         echo "Installing Edge Edition." 
         echo "Getting latest version"
         versions=$(curl --silent "https://api.github.com/repos/hivemq/hivemq-edge/releases" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-
+        if [ $? -ne 0 ]; then
+        echo -e "${Red} Failed to fetch data from repository ${Color_Off}"
+        exit 3
+        fi
+        
         echo "Select an Edge version:"
         select version in $versions; do
         selectedVersion=$(echo "$version")
@@ -82,7 +134,6 @@ case $choice in
 
         filename="hivemq-edge-full-${selectedVersion}"
         downloadLink="https://releases.hivemq.com/edge/${filename}.zip"
-        finalDirectory="hivemq-edge-${selectedVersion}"
 
         echo "Downloading : ${filename}"
         curl -O ${downloadLink}
