@@ -7,9 +7,18 @@ Color_Off='\033[0m'
 echo -e "${Yellow}Welcome to the community installer for HiveMQ OSS ${Color_Off}"
 echo ""
 
+echo "Checking OS"
+if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+   osType="Debian"
+fi
+if [ "$(grep -Ei 'fedora|redhat' /etc/*release)" ]; then
+   osType="RedHat"
+fi
+echo "${osType} based"
+
 echo "Checking prerequisites"
 echo "Curl & Unzip"
-apt install curl unzip -y
+apt install curl unzip wget -y
 
 echo "Java 17"
 if type -p java; then
@@ -56,6 +65,7 @@ echo ""
 echo "Which Open Source version of HiveMQ do you want to install :"
 echo "1. HiveMQ Community Edition"
 echo "2. HiveMQ Edge Edition"
+echo "3. HiveMQ Enterprise Edition"
 read choice
 case $choice in
     1) 
@@ -68,7 +78,7 @@ case $choice in
         exit 3
         fi
 
-        echo "Select an Edge version:"
+        echo "Select a Community Edition version:"
         select version in $versions; do
         selectedVersion=$(echo "$version")
         echo "You selected: $selectedVersion"
@@ -78,7 +88,8 @@ case $choice in
         downloadLink="https://github.com/hivemq/hivemq-community-edition/releases/download/${selectedVersion}/${filename}.zip"
 
         echo "Downloading : ${filename}"
-        curl -O ${downloadLink}
+        echo "Download link : ${downloadLink}"
+        wget ${downloadLink}
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Unzipping ..."
@@ -136,7 +147,7 @@ case $choice in
         downloadLink="https://releases.hivemq.com/edge/${filename}.zip"
 
         echo "Downloading : ${filename}"
-        curl -O ${downloadLink}
+        wget ${downloadLink}
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Unzipping ..."
