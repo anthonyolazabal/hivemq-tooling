@@ -185,54 +185,5 @@ case $choice in
 
         echo -e "${Green}Installation done ${Color_Off}"
         ;;
-    
-    3) 
-        echo "Installing latest version of Enterprise Edition." 
-        echo "Getting latest version"
-        wget "https://www.hivemq.com/releases/hivemq-latest.zip"
-        echo -e "${Green} Success ${Color_Off}"
-
-        echo "Unzipping ..."
-        mv hivemq-latest.zip /opt
-        cd /opt
-        unzip -o hivemq-latest.zip
-        echo -e "${Green} Success ${Color_Off}"
-        
-        # This always get the lowest version folder so needs to be fixed in future release with an endpoint that list the official versions
-        pattern="hivemq"
-        for _dir in "${pattern}"*; do
-            [ -d "${_dir}" ] && dir="${_dir}" && break
-        done
-
-        echo "Creating seemlink"
-        rm /opt/hivemq
-        ln -s /opt/${dir} /opt/hivemq
-        echo -e "${Green} Success ${Color_Off}"
-
-        echo "Creating hivemq user"
-        useradd -d /opt/hivemq hivemq
-        echo -e "${Green} Success ${Color_Off}"
-
-        echo "Updating files ownership"
-        chown -R hivemq:hivemq /opt/${dir}
-        chown -R hivemq:hivemq /opt/hivemq
-        echo -e "${Green} Success ${Color_Off}"
-
-        echo "Adding execution permission on startup script"
-        cd /opt/hivemq
-        chmod +x ./bin/run.sh
-        echo -e "${Green} Success ${Color_Off}"
-
-        echo "Installing HiveMQ Service"
-        cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
-        systemctl enable hivemq
-
-        echo "Starting service"
-        systemctl start hivemq
-        echo -e "${Green} Success ${Color_Off}"
-
-        echo -e "${Green}Installation done ${Color_Off}"
-        ;;
-
     *) echo "Invalid choice." ;;
 esac
