@@ -20,7 +20,7 @@ echo "Checking prerequisites"
 echo "Curl & Unzip"
 if ["$osType" = "Debian"]
     apt install curl unzip wget -y
-elif ["$osType" = "RedHat"]
+elif ["$osType" = "RedHat"] then
     dnf install curl unzip wget -y
 fi
 
@@ -36,7 +36,7 @@ else
     if ["$osType" = "Debian"]
         apt update
         apt install openjdk-17-jdk -y
-    elif ["$osType" = "RedHat"]
+    elif ["$osType" = "RedHat"] then
         dnf install java-11-openjdk.x86_64
     fi
 fi
@@ -129,7 +129,7 @@ case $choice in
         if ["$osType" = "Debian"]
             cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
             systemctl enable hivemq
-        elif ["$osType" = "RedHat"]
+        elif ["$osType" = "RedHat"] then
             cp /opt/hivemq/bin/init-script/hivemq /etc/init.d/hivemq
             chmod +x /etc/init.d/hivemq
         fi
@@ -137,7 +137,7 @@ case $choice in
         echo "Starting service"
         if ["$osType" = "Debian"]
             systemctl start hivemq
-        elif ["$osType" = "RedHat"]
+        elif ["$osType" = "RedHat"] then
             chkconfig hivemq on
         fi
 
@@ -197,7 +197,7 @@ case $choice in
         if ["$osType" = "Debian"]
             cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
             systemctl enable hivemq
-        elif ["$osType" = "RedHat"]
+        elif ["$osType" = "RedHat"] then
             cp /opt/hivemq/bin/init-script/hivemq /etc/init.d/hivemq
             chmod +x /etc/init.d/hivemq
         fi
@@ -205,7 +205,7 @@ case $choice in
         echo "Starting service"
         if ["$osType" = "Debian"]
             systemctl start hivemq
-        elif ["$osType" = "RedHat"]
+        elif ["$osType" = "RedHat"] then
             chkconfig hivemq on
         fi
         
