@@ -34,11 +34,13 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
 else
     echo "No Java Found, Installing"
-    if [ $osType == 'Debian' ] then
+    if [ $osType == 'Debian' ]; 
+    then
         apt update
         apt install openjdk-17-jdk -y
-    elif [ $osType == 'RedHat' ] then
-        sudo dnf install java-11-openjdk.x86_64
+    elif [ $osType == 'RedHat' ]; 
+    then
+        sudo dnf install java-17-openjdk.x86_64 -y
     fi
 fi
 
@@ -123,20 +125,11 @@ case $choice in
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Installing HiveMQ Service"
-        if [ $osType == 'Debian' ] then
-            cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
-            systemctl enable hivemq
-        elif [ $osType == 'RedHat' ] then
-            cp /opt/hivemq/bin/init-script/hivemq /etc/init.d/hivemq
-            chmod +x /etc/init.d/hivemq
-        fi
-
+        cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
+        systemctl enable hivemq
+        
         echo "Starting service"
-        if [ $osType == 'Debian' ] then
-            systemctl start hivemq
-        elif [ $osType == 'RedHat' ] then
-            chkconfig hivemq on
-        fi
+        systemctl start hivemq
 
         echo -e "${Green} Success ${Color_Off}"
 
@@ -191,20 +184,11 @@ case $choice in
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Installing HiveMQ Service"
-        if [ $osType  == 'Debian' ] then
-            cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
-            systemctl enable hivemq
-        elif [ $osType == 'RedHat' ] then
-            cp /opt/hivemq/bin/init-script/hivemq /etc/init.d/hivemq
-            chmod +x /etc/init.d/hivemq
-        fi
+        cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
+        systemctl enable hivemq
 
         echo "Starting service"
-        if [ $osType == 'Debian' ] then
-            systemctl start hivemq
-        elif [ $osType == 'RedHat' ] then
-            chkconfig hivemq on
-        fi
+        systemctl start hivemq
         
         echo -e "${Green} Success ${Color_Off}"
 
