@@ -18,10 +18,11 @@ echo "${osType} based"
 
 echo "Checking prerequisites"
 echo "Curl & Unzip"
-if ["$osType" = "Debian"]
+if [ $osType == 'Debian' ]; then
     apt install curl unzip wget -y
-elif ["$osType" = "RedHat"] then
-    dnf install curl unzip wget -y
+fi
+if [ $osType == 'RedHat' ]; then
+    sudo dnf install curl unzip wget -y
 fi
 
 echo "Java 17"
@@ -33,11 +34,11 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
 else
     echo "No Java Found, Installing"
-    if ["$osType" = "Debian"]
+    if [ $osType == 'Debian' ] then
         apt update
         apt install openjdk-17-jdk -y
-    elif ["$osType" = "RedHat"] then
-        dnf install java-11-openjdk.x86_64
+    elif [ $osType == 'RedHat' ] then
+        sudo dnf install java-11-openjdk.x86_64
     fi
 fi
 
@@ -51,9 +52,6 @@ if [[ "$_java" ]]; then
         exit 3
     fi
 fi
-
-clear
-
 
 # Installation Menu
 
@@ -73,7 +71,6 @@ echo ""
 echo "Which Open Source version of HiveMQ do you want to install :"
 echo "1. HiveMQ Community Edition"
 echo "2. HiveMQ Edge Edition"
-echo "3. HiveMQ Enterprise Edition"
 read choice
 case $choice in
     1) 
@@ -126,18 +123,18 @@ case $choice in
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Installing HiveMQ Service"
-        if ["$osType" = "Debian"]
+        if [ $osType == 'Debian' ] then
             cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
             systemctl enable hivemq
-        elif ["$osType" = "RedHat"] then
+        elif [ $osType == 'RedHat' ] then
             cp /opt/hivemq/bin/init-script/hivemq /etc/init.d/hivemq
             chmod +x /etc/init.d/hivemq
         fi
 
         echo "Starting service"
-        if ["$osType" = "Debian"]
+        if [ $osType == 'Debian' ] then
             systemctl start hivemq
-        elif ["$osType" = "RedHat"] then
+        elif [ $osType == 'RedHat' ] then
             chkconfig hivemq on
         fi
 
@@ -194,18 +191,18 @@ case $choice in
         echo -e "${Green} Success ${Color_Off}"
 
         echo "Installing HiveMQ Service"
-        if ["$osType" = "Debian"]
+        if [ $osType  == 'Debian' ] then
             cp /opt/hivemq/bin/init-script/hivemq.service /etc/systemd/system/hivemq.service
             systemctl enable hivemq
-        elif ["$osType" = "RedHat"] then
+        elif [ $osType == 'RedHat' ] then
             cp /opt/hivemq/bin/init-script/hivemq /etc/init.d/hivemq
             chmod +x /etc/init.d/hivemq
         fi
 
         echo "Starting service"
-        if ["$osType" = "Debian"]
+        if [ $osType == 'Debian' ] then
             systemctl start hivemq
-        elif ["$osType" = "RedHat"] then
+        elif [ $osType == 'RedHat' ] then
             chkconfig hivemq on
         fi
         
