@@ -12,6 +12,7 @@ The install script has been test with :
 - Ubuntu 20
 - Ubuntu 22
 - Ubuntu 24
+- Fedora 41
 
 Execution has to be done with root permissions in order to manipulate the files in /opt and install the service.
 
@@ -28,6 +29,7 @@ The install script has been test with :
 - Ubuntu 20
 - Ubuntu 22
 - Ubuntu 24
+- Fedora 41
 
 Execution has to be done with root permissions in order to manipulate the files in /opt and install the service.
 

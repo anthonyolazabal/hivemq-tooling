@@ -31,7 +31,12 @@ echo "${osType} based"
 
 echo "Checking prerequisites"
 echo "Curl & Unzip"
-apt install curl unzip wget -y
+if [ $osType == 'Debian' ]; then
+    apt install curl unzip wget -y
+fi
+if [ $osType == 'RedHat' ]; then
+    sudo dnf install curl unzip wget -y
+fi
 
 echo "Java 17"
 if type -p java; then
@@ -42,8 +47,14 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
 else
     echo "No Java Found, Installing"
-    apt update
-    apt install openjdk-17-jdk -y
+    if [ $osType == 'Debian' ]; 
+    then
+        apt update
+        apt install openjdk-17-jdk -y
+    elif [ $osType == 'RedHat' ]; 
+    then
+        sudo dnf install java-17-openjdk.x86_64 -y
+    fi
 fi
 
 if [[ "$_java" ]]; then
